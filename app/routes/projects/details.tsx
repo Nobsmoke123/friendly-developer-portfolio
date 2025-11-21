@@ -3,11 +3,13 @@ import type { Route } from "./+types/details";
 import { Link } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
 
+const APP_URL = import.meta.env.VITE_API_URL;
+
 export async function clientLoader({
   request: _,
   params,
 }: Route.ClientLoaderArgs): Promise<Project> {
-  const response = await fetch(`http://localhost:5001/projects/${params.id}`);
+  const response = await fetch(`${APP_URL}/projects/${params.id}`);
 
   if (!response.ok) {
     const error = await response.json();

@@ -5,10 +5,12 @@ import { useState } from "react";
 import Pagination from "~/components/Pagination";
 import { AnimatePresence, motion } from "framer-motion";
 
+const APP_URL = import.meta.env.VITE_API_URL;
+
 export async function loader({
   request: _,
 }: Route.LoaderArgs): Promise<{ projects: Project[] }> {
-  const response = await fetch("http://localhost:5001/projects");
+  const response = await fetch(`${APP_URL}/projects`);
 
   const data: Project[] = await response.json();
   return { projects: data };

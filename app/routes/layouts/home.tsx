@@ -17,7 +17,7 @@ const homeLayout = () => {
         subheading="I build friendly web experiences and help others become confident modern
         developers"
       />
-      <section className="w-full mx-auto">
+      <section className="w-full mx-auto px-8 py-4">
         <Outlet />
       </section>
     </>
