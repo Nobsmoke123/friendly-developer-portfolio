@@ -40,9 +40,7 @@ const BlogDetailsPage = ({ loaderData }: Route.ComponentProps) => {
         {postMeta.title}
       </h1>
       <p className="text-white text-sm font-light mb-6">
-        {new Date(postMeta.date).toLocaleDateString("en-GB", {
-          timeZone: "UTC",
-        })}
+        {new Date(postMeta.date).toDateString()}
       </p>
 
       <div className="prose prose-invert text-white font-light max-w-none mb-12">

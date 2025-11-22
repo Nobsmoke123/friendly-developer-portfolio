@@ -11,9 +11,7 @@ const PostCard: React.FC<{ post: PostMeta }> = ({ post }) => {
         {post.title}
       </h3>
       <p className="text-xs font-light text-white mb-2">
-        {new Date(post.date).toLocaleDateString("en-GB", {
-          timeZone: "UTC",
-        })}
+        {new Date(post.date).toDateString()}
       </p>
 
       <p className="text-white text-sm mb-6">{post.excerpt}</p>

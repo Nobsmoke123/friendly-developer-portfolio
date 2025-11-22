@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 const AboutPreview = () => {
   return (
-    <section className="mt-12 p-10 flex flex-col md:flex-row items-center gap-8 bg-white">
+    <section className="mt-12 p-10 flex flex-col md:flex-row items-center gap-8 bg-white mb-12">
       <img
         src={"/images/profile.jpg"}
         alt="profile"
