@@ -1,50 +1,47 @@
 import ReactMarkdown from "react-markdown";
 import type { Route } from "./+types/details";
-import type { PostMeta } from "~/types/posts";
-import { URL } from "url";
+import type { PostMeta, StrapiPost } from "~/types/posts";
 import { Link } from "react-router";
+import type { StrapiResponse } from "~/types/project";
+import { postTransformer } from "~/utils/transforms";
 
 export async function loader({
-  request,
+  request: _,
   params,
-}: Route.LoaderArgs): Promise<{ postMeta: PostMeta; markdown: string }> {
+}: Route.LoaderArgs): Promise<{ post: PostMeta }> {
   const { slug } = params;
 
-  const url = new URL("/posts-meta.json", request.url);
-  const response = await fetch(url.href);
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/posts?filters[slug][$eq]=${slug}&populate=image`
+  );
 
   if (!response.ok) {
     const error = await response.json();
     throw new Error("Failed to fetch data", error);
   }
 
-  const index: PostMeta[] = await response.json();
+  const { data }: StrapiResponse<StrapiPost> = await response.json();
 
-  const postMeta = index.find((post) => slug === post.slug);
+  const post = postTransformer(data)[0];
 
-  if (!postMeta) {
-    throw new Response("Not Found", { status: 404 });
-  }
-
-  // Dynamically import the markdown content
-  const markdown = await import(`../../posts/${slug}.md?raw`);
-
-  return { postMeta, markdown: markdown.default };
+  return { post };
 }
 
 const BlogDetailsPage = ({ loaderData }: Route.ComponentProps) => {
-  const { markdown, postMeta } = loaderData;
+  const { post } = loaderData;
   return (
     <div className="max-w-3xl mx-auto px-6 py-4 bg-stone-700 rounded mt-6">
       <h1 className="text-3xl text-white font-light tracking-wider mb-2">
-        {postMeta.title}
+        {post.title}
       </h1>
       <p className="text-white text-sm font-light mb-6">
-        {new Date(postMeta.date).toDateString()}
+        {new Date(post.date).toDateString()}
       </p>
 
+      <img src={post.image} alt={post.title} className="w-full h-90 mb-4" />
+
       <div className="prose prose-invert text-white font-light max-w-none mb-12">
-        <ReactMarkdown>{markdown}</ReactMarkdown>
+        <ReactMarkdown>{post.content}</ReactMarkdown>
       </div>
 
       <Link

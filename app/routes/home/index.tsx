@@ -1,9 +1,10 @@
 import type { Route } from "./+types/index";
 import FeaturedProjects from "~/components/FeaturedProjects";
-import type { Project } from "~/types/project";
+import type { Project, StrapiProject, StrapiResponse } from "~/types/project";
 import AboutPreview from "~/components/AboutPreview";
-import type { PostMeta } from "~/types/posts";
+import type { PostMeta, StrapiPost } from "~/types/posts";
 import LatestPosts from "~/components/LatestPosts";
+import { postTransformer, projectTransformer } from "~/utils/transforms";
 
 const APP_URL = import.meta.env.VITE_API_URL;
 
@@ -15,13 +16,11 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function loader({
-  request,
+  request: _,
 }: Route.LoaderArgs): Promise<{ projects: Project[]; posts: PostMeta[] }> {
-  const url = new URL("/posts-meta.json", request.url);
-
   const [projectResponse, postResponse] = await Promise.all([
-    fetch(`${APP_URL}/projects`),
-    fetch(url.href),
+    fetch(`${APP_URL}/projects?filters[featured][$eq]=true&populate=*`),
+    fetch(`${APP_URL}/posts?sort=date:desc&populate=*`),
   ]);
 
   if (!projectResponse.ok || !postResponse.ok) {
@@ -32,12 +31,18 @@ export async function loader({
     throw new Response("An error occured", { ...projectError, ...postsError });
   }
 
-  const [data, posts] = await Promise.all([
-    projectResponse.json(),
-    postResponse.json(),
-  ]);
+  const [projectData, postData]: [
+    StrapiResponse<StrapiProject>,
+    StrapiResponse<StrapiPost>,
+  ] = await Promise.all([projectResponse.json(), postResponse.json()]);
 
-  return { projects: data, posts };
+  let { data } = projectData;
+  const projects = projectTransformer(data);
+
+  const { data: postsData } = postData;
+  const posts = postTransformer(postsData);
+
+  return { projects, posts };
 }
 
 const HomePage = ({ loaderData }: Route.ComponentProps) => {

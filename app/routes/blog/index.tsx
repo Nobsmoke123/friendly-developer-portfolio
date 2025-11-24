@@ -1,28 +1,29 @@
-import type { PostMeta } from "~/types/posts";
+import type { PostMeta, StrapiPost } from "~/types/posts";
 import type { Route } from "./+types/index";
-import { URL } from "url";
 import PostCard from "~/components/PostCard";
 import { useState } from "react";
 import Pagination from "~/components/Pagination";
 import PostFilter from "~/components/PostFilter";
+import type { StrapiResponse } from "~/types/project";
+import { postTransformer } from "~/utils/transforms";
 
 export async function loader({
-  request,
+  request: _,
 }: Route.LoaderArgs): Promise<{ posts: PostMeta[] }> {
-  const url = new URL("/posts-meta.json", request.url);
-
-  const response = await fetch(url.href);
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/posts?populate=image&sort=date:desc`
+  );
 
   if (!response.ok) {
     const error = await response.json();
     throw new Response("Failed to load data.", error);
   }
 
-  const data: PostMeta[] = await response.json();
+  const { data }: StrapiResponse<StrapiPost> = await response.json();
 
-  data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const posts = postTransformer(data);
 
-  return { posts: data };
+  return { posts };
 }
 
 const BlogPage = ({ loaderData }: Route.ComponentProps) => {

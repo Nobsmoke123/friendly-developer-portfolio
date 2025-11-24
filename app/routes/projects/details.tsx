@@ -1,27 +1,29 @@
-import type { Project } from "~/types/project";
+import type { Project, StrapiProject, StrapiResponse } from "~/types/project";
 import type { Route } from "./+types/details";
 import { Link } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
+import { projectTransformer } from "~/utils/transforms";
 
 const APP_URL = import.meta.env.VITE_API_URL;
 
-export async function clientLoader({
+export async function loader({
   request: _,
   params,
-}: Route.ClientLoaderArgs): Promise<Project> {
-  const response = await fetch(`${APP_URL}/projects/${params.id}`);
+}: Route.LoaderArgs): Promise<Project> {
+  const response = await fetch(
+    `${APP_URL}/projects/?filters[documentId][$eq]=${params.id}&populate=*`
+  );
 
   if (!response.ok) {
     const error = await response.json();
     throw new Response("Project not found", error);
   }
 
-  const project: Project = await response.json();
-  return project;
-}
+  const { data }: StrapiResponse<StrapiProject> = await response.json();
 
-export function HydrateFallback() {
-  return <div>Loading...</div>;
+  const project = projectTransformer(data)[0];
+
+  return project;
 }
 
 const ProjectDetailsPage = ({ loaderData }: Route.ComponentProps) => {
