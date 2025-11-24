@@ -8,9 +8,7 @@ export const projectTransformer = (data: StrapiProject[]) =>
     title: project.title,
     description: project.description,
     url: project.url,
-    image: project.image.url
-      ? `${import.meta.env.VITE_STRAPI_API_URL}${project.image.url}`
-      : "/images/no-image.png",
+    image: project.image?.url ? `${project.image.url}` : "/images/no-image.png",
     date: project.date,
     category: project.category,
     featured: project.featured,
@@ -28,7 +26,5 @@ export const postTransformer = (data: StrapiPost[]) =>
     excerpt: post.excerpt,
     date: post.date,
     content: post.content,
-    image: post.image?.url
-      ? `${import.meta.env.VITE_STRAPI_API_URL}${post.image.url}`
-      : "/images/no-image.png",
+    image: post.image?.url ? `${post.image.url}` : "/images/no-image.png",
   }));

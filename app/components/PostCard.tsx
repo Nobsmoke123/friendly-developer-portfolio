@@ -14,7 +14,13 @@ const PostCard: React.FC<{ post: PostMeta }> = ({ post }) => {
         {new Date(post.date).toDateString()}
       </p>
 
-      {post.image && <img className="w-full h-70 rounded object.contain" src={post.image} alt={post.title} />}
+      {post.image && (
+        <img
+          className="w-full h-70 rounded object.contain mb-4"
+          src={post.image}
+          alt={post.title}
+        />
+      )}
 
       <p className="text-white text-sm mb-6">{post.excerpt}</p>
       <Link
