@@ -2,6 +2,16 @@
 
 A server-rendered React Router v7 portfolio and blog experience that showcases projects, long-form posts, and a Formspree-powered contact form. The project uses modern React 19 APIs, Vite, Tailwind CSS v4, Framer Motion, and type-safe loaders/actions to orchestrate data coming from a Strapi-style CMS.
 
+**Live Preview** : &nbsp; [friendly-developer-portfolio.vercel.app](https://friendly-developer-portfolio.vercel.app/)
+
+---
+
+### Note
+
+The app would take a moment (a minute or two) to load up because the backend server is hosted on render for free and might have been spun down when you try to check the preview.
+
+---
+
 ## Table of Contents
 
 1. [Highlights](#highlights)
@@ -97,13 +107,13 @@ VITE_API_URL=https://your-strapi-instance.com/api
 
 ## Available Scripts
 
-| Script            | Description                                                                 |
-| ----------------- | --------------------------------------------------------------------------- |
-| `npm run dev`     | Starts the React Router dev server with SSR + HMR                           |
-| `npm run build`   | Generates `build/client` (static assets) and `build/server` (SSR bundle)    |
-| `npm run start`   | Serves the production build via `@react-router/serve`                       |
-| `npm run typecheck` | Generates router types then runs `tsc --noEmit` for a strict type pass    |
-| `npm run json-server` | Serves `data/db.json` on `http://localhost:5001` for quick API mocking |
+| Script                | Description                                                              |
+| --------------------- | ------------------------------------------------------------------------ |
+| `npm run dev`         | Starts the React Router dev server with SSR + HMR                        |
+| `npm run build`       | Generates `build/client` (static assets) and `build/server` (SSR bundle) |
+| `npm run start`       | Serves the production build via `@react-router/serve`                    |
+| `npm run typecheck`   | Generates router types then runs `tsc --noEmit` for a strict type pass   |
+| `npm run json-server` | Serves `data/db.json` on `http://localhost:5001` for quick API mocking   |
 
 ## Data Loading
 
